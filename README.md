@@ -1,7 +1,7 @@
 # CockroachDB Multi-Cloud Demo (Local k3d)
 
 ## Install k3d on your Mac
-To run a multi regional CockroachDB locally on a Macbook you need something that will enable you to run Kubernetes locally. In this demo I will use k3d. To install k3d run the following command.
+To run a multi regional CockroachDB locally on a Macbook you need something that will enable you to run Kubernetes locally. In this demo I will use k3d. To install k3d run the following command. You will need plenty of CPU and Memory to run the three replicas per region, but you cloud lower these to two node per region if you like to still achieve the same affect.
 
 ```
 wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
@@ -183,7 +183,7 @@ Next, create a secure client in the first region.
 kubectl create -f https://raw.githubusercontent.com/cockroachdb/cockroach/master/cloud/kubernetes/multiregion/client-secure.yaml --namespace $eks_region
 ```
 
-Now exec into the pod using the Cockraoch SQL client.
+Now exec into the pod using the CockraochDB SQL client.
 ```
 kubectl exec -it cockroachdb-client-secure -n $eks_region -- ./cockroach sql --certs-dir=/cockroach-certs --host=cockroachdb-public
 ```
@@ -194,7 +194,7 @@ GRANT admin TO craig;
 \q
 ```
 
-To user the map you need an enterprise license. Use the command below to cut a license key.
+To use the map you need an enterprise license. Use the command below to cut a license key.
 ```
 ./crl-lic -type Evaluation -org "Cockroach Labs" -site -expiration "2023-10-03 00:00 America/New_York"
 ```
@@ -223,14 +223,6 @@ Port forward port `8080` to localhost so you are able to access the CockroachDB 
 kubectl port-forward cockroachdb-0 8080 -n $eks_region
 ```
 
-`Test this`
-```
-kubectl apply -f aws-svc-admin-ui.yaml --namespace $eks_region
-kubectl apply -f gke-svc-admin-ui.yaml --namespace $gke_region
-kubectl apply -f azure-svc-admin-ui.yaml --namespace $aks_region
-```
-
-
 ## Kube-doom Setup
 
 Deploy Kube-Doom using Kustomize.
@@ -245,6 +237,8 @@ kubedoom_pod=$(kubectl get pods -n kubedoom -o name --no-headers=true)
 echo $kubedoom_pod
 kubectl port-forward -n kubedoom $kubedoom_pod 5900
 ```
+
+To get access the the Doom interface you will need VNCViewer. This can be downloaded free from [here](https://www.realvnc.com/en/connect/download/viewer/).
 
 VNC Password:
 ```
@@ -261,6 +255,6 @@ IDSPISPOPD - no clipping / walk through walls
 ## Clean Up
 To clean up the resources delete the cluster and delete the certificates.
 ```
-k3d cluster delete
+k3d cluster delete kube-doom
 rm -R certs my-safe-directory
 ```
