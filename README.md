@@ -157,9 +157,9 @@ rm certs/node.key
 Deploy the three separate StatefulSet.
 > There are some hard codes region names in these files. If you have changed the region names you will need to edit these files.
 ```
-kubectl -n $eks_region apply -f manifest/aws-cockroachdb-statefulset-secure.yaml
-kubectl -n $gke_region apply -f manifest/gke-cockroachdb-statefulset-secure.yaml
-kubectl -n $aks_region apply -f manifest/azure-cockroachdb-statefulset-secure.yaml
+kubectl apply -f manifest/aws-cockroachdb-statefulset-secure.yaml -n $eks_region
+kubectl apply -f manifest/gke-cockroachdb-statefulset-secure.yaml -n $gke_region
+kubectl apply -f manifest/azure-cockroachdb-statefulset-secure.yaml -n $aks_region
 ```
 
 Once the pods are deployed we need to initialize the cluster. This is done by 'execing' into the container and running the `cockroach init` command.
@@ -221,6 +221,18 @@ INSERT INTO system.locations VALUES
 Port forward port `8080` to localhost so you are able to access the CockroachDB Admin UI from the browser.
 ```
 kubectl port-forward cockroachdb-0 8080 -n $eks_region
+```
+
+Exec into the secure client pod and get a shell command.
+```
+kubectl exec -it cockroachdb-client-secure -n $eks_region -- sh
+```
+
+Now we can run the simulated workload. First initalise the database the run the workload.
+```
+cockroach workload init movr 'postgresql://craig:cockroach@cockroachdb-public:26257/movr?sslmode=verify-full&sslrootcert=/cockroach-certs/ca.crt'
+
+cockroach workload run movr --tolerate-errors --duration=99999m 'postgresql://craig:cockroach@cockroachdb-public:26257/movr?sslmode=verify-full&sslrootcert=/cockroach-certs/ca.crt'
 ```
 
 ## Kube-doom Setup
