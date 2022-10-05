@@ -194,20 +194,18 @@ GRANT admin TO craig;
 \q
 ```
 
-To use the map you need an enterprise license. Use the command below to cut a license key.
-```
-./crl-lic -type Evaluation -org "Cockroach Labs" -site -expiration "2023-10-03 00:00 America/New_York"
-```
+To use the map you need an enterprise license. To obtain a trial license please visit [this](https://www.cockroachlabs.com/get-cockroachdb/enterprise/) URL.
 
-Exec into the pod again and apply the license.
+
+Exec into the pod to apply your license and to enable map view.
 ```
 kubectl exec -it cockroachdb-client-secure -n $eks_region -- ./cockroach sql --certs-dir=/cockroach-certs --host=cockroachdb-public
 ```
-Here are a couple of example cluster settings.
+
+Here is an example of the command to apply your license.
 ```
-SET CLUSTER SETTING cluster.organization = 'Cockroach Labs';
-SET CLUSTER SETTING enterprise.license = 'crl-0-EMC86ZkGGAIiDkNvY2tyb2FjaCBMYWJz';
-```
+SET CLUSTER SETTING cluster.organization = 'Your Company Name';
+SET CLUSTER SETTING enterprise.license = '<License Key Here>';
 
 To make use of the map we need to add the system locations below. You need to be exec'ed into the pod still.
 ```

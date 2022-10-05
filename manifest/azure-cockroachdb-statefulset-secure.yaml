@@ -145,7 +145,7 @@ metadata:
   namespace: uksouth
 spec:
   serviceName: "cockroachdb"
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: cockroachdb
