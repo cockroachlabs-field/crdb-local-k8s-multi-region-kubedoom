@@ -155,7 +155,7 @@ rm certs/node.key
 ```
 
 Deploy the three separate StatefulSet.
-> There are some hard codes region names in these files. If you have changed the region names you will need to edit these files.
+> There are some hard codes region names in these files. If you have changed the region names you will need to edit these files. You may also want to adjust the replica count and resource requests and limits depending on your computer spec.
 ```
 kubectl apply -f manifest/aws-cockroachdb-statefulset-secure.yaml -n $eks_region
 kubectl apply -f manifest/gke-cockroachdb-statefulset-secure.yaml -n $gke_region
