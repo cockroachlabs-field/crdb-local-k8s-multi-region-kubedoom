@@ -206,6 +206,7 @@ Here is an example of the command to apply your license.
 ```
 SET CLUSTER SETTING cluster.organization = 'Your Company Name';
 SET CLUSTER SETTING enterprise.license = '<License Key Here>';
+```
 
 To make use of the map we need to add the system locations below. You need to be exec'ed into the pod still.
 ```
@@ -219,6 +220,14 @@ INSERT INTO system.locations VALUES
 Port forward port `8080` to localhost so you are able to access the CockroachDB Admin UI from the browser.
 ```
 kubectl port-forward cockroachdb-0 8080 -n $eks_region
+```
+## Run a workload
+
+Open a second terminal window. Create three variables with the region names desired.
+```
+export eks_region="eu-west-1"
+export gke_region="europe-west4"
+export aks_region="uksouth"
 ```
 
 Exec into the secure client pod and get a shell command.
@@ -235,13 +244,20 @@ cockroach workload run movr --tolerate-errors --duration=99999m 'postgresql://cr
 
 ## Kube-doom Setup
 
-Deploy Kube-Doom using Kustomize.
+Open another terminal window and deploy Kube-Doom using Kustomize.
+Create three variables with the region names desired.
+```
+export eks_region="eu-west-1"
+export gke_region="europe-west4"
+export aks_region="uksouth"
+```
 
+Deploy kube-doom using Kustomize.
 ```
 kubectl apply -k manifest/
 ```
 
-Open another terminal window and port forward port `5900` so you are able to use VNC Viewer to connect to the pod running kube-doom.
+Now port forward port `5900` so you are able to use VNC Viewer to connect to the pod running kube-doom.
 ```
 kubedoom_pod=$(kubectl get pods -n kubedoom -o name --no-headers=true)
 echo $kubedoom_pod
